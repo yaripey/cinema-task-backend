@@ -1,6 +1,9 @@
 require('dotenv').config();
 
-const { ApolloServer } = require('apollo-server')
+const express = require('express')
+const { ApolloServer } = require('apollo-server-express')
+
+const app = express()
 
 const mongoose = require('mongoose')
 
@@ -26,10 +29,11 @@ mongoose.connect(MONGODB_URI, {
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers,
-  introspection: true
+  resolvers
 })
 
-server.listen({port: process.env.PORT || 4000}).then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+server.applyMiddleware({app});
+
+app.listen({port: process.env.PORT || 4000}, () => {
+  console.log('Server ready')
 })
